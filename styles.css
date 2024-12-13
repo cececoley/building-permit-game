@@ -1,0 +1,55 @@
+body {
+    box-sizing: border-box;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+}
+
+
+.container {
+    width: 800px;
+    max-width: 80%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px 2px;
+
+}
+
+.screen {
+    display: none;
+    padding: 20px;
+}
+
+.screen.active {
+    display: block;
+}
+
+.application {
+    margin: 20px 0;
+}
+
+.btn-grid {
+    display: grid;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+button {
+    background-color: hsl(200,100%, 30%);
+    border: 1px solid hsl(hue, 200, 100%, 30%);
+    border-radius: 5px;
+    padding: 5px 10px;
+    color: white;
+}
+
+.btn:hover {
+
+    border-color:black;
+}
+

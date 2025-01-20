@@ -1,0 +1,423 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Building Permit Approval Game</title>
+    <style>
+        /* General Styling */
+        body {
+            box-sizing: border-box;
+            font-family: 'Poppins', Arial, sans-serif;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100vw;
+            height: 100vh;
+            background-color: #f0f8ff;
+        }
+
+        .container {
+            width: 800px;
+            max-width: 90%;
+            background-color: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .screen {
+            display: none;
+            padding: 20px;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        h1, h2, h3 {
+            font-weight: 600;
+            text-align: center;
+            color: #1e2a4a;
+        }
+
+        p, li {
+            font-size: 1rem;
+            color: #1e2a4a;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        ul {
+    padding-left: 20px; /* Adjust space from the left */
+    list-style-type: disc; /* Default bullet style */
+}
+
+li {
+    font-size: 1rem; /* Adjust font size */
+    line-height: 1.5; /* Add spacing between lines */
+    margin-bottom: 10px; /* Add space between list items */
+    color: #1e2a4a; /* Text color */
+    position: relative; /* Allows positioning of icons or custom bullets */
+}
+
+
+        /* Application Card Styling */
+        .application-card {
+            border: 2px solid #e3e9f3;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .application-header {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #1e2a4a;
+        }
+
+        .application-header img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            border: 1px solid #e3e9f3;
+        }
+
+        .scenario {
+            background-color: #eaf4fc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: #1e2a4a;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .feedback.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .feedback.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .feedback.hint {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+
+        
+        /* Button Styling */
+
+        .button-container {
+    display: flex; /* Enables flexbox */
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    height: 100%; /* Adjust this to your container's height */
+}
+
+        button {
+            background-color: #0077cc;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #005fa3;
+        }
+
+        /* Text Input Styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e3e9f3;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        /* Flex Container for Buttons */
+        .btn-group {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .btn-group button {
+            flex: 1;
+            margin: 0 5px;
+        }
+
+        /* Screen Images */
+        .screen img {
+             max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            padding-top: 20px; 
+           margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+        }
+    </style>
+    <script>
+        // Global variables to track application and score
+        let currentApplication = 0;
+        let score = 0;
+
+        // List of applications for the game
+        const applications = [
+            {
+                id: 1,
+                scenario: "A developer wants to build a housing project in a small residential neighborhood prone to flooding.",
+                description: "The proposed residential building has a plot size of 480 sqm, a building height of 12 meters, and no storm drains.",
+                correct: "reject",
+                feedbackCorrect: "Great job! This application violates the minimum plot size and lacks storm drains, which are critical in a flood-prone area.",
+                feedbackIncorrect: "Ok, maybe not quite. This application violates the minimum plot size and lacks storm drains.",
+                hint: "Check the minimum plot size and whether storm drains are included.",
+                image: "application_1.jpg"
+            },
+            {
+                id: 2,
+                scenario: "A homeowner is expanding their property and includes landscaping improvements to reduce water runoff.",
+                description: "The proposed residential building has a plot size of 550 sqm, a building height of 9 meters, and proper storm drains.",
+                correct: "approve",
+                feedbackCorrect: "Awesome! This application meets all guidelines, including proper storm drainage and landscaping improvements.",
+                feedbackIncorrect: "Not quite. This application actually meets all guidelines, including storm drainage and landscaping requirements.",
+                hint: "Does it comply with plot size, building height, and storm drain requirements?",
+                image: "application_2.jpg"
+            },
+            {
+                id: 3,
+                scenario: "A residential developer proposes a new family home with minimal setbacks in a high-traffic area.",
+                description: "The residential building has a plot size of 600 sqm, a frontage setback of 5 meters, and one tree included.",
+                correct: "reject",
+                feedbackCorrect: "Well done! This application violates the minimum frontage setback of 6 meters, which is crucial in a high-traffic area.",
+                feedbackIncorrect: "Close, but this application violates the minimum frontage setback of 6 meters.",
+                hint: "Frontage setback is an important guideline to check.",
+                image: "application_3.jpg"
+            },
+            {
+                id: 4,
+                scenario: "A developer plans a small housing project with an emphasis on environmental sustainability.",
+                description: "The proposed residential building has a plot size of 700 sqm, proper storm drains, and 50% permeable landscaping.",
+                correct: "approve",
+                feedbackCorrect: "Fantastic! This application meets all guidelines, including landscaping and storm drain requirements, ensuring sustainability.",
+                feedbackIncorrect: "Hmm, not quite. This application meets all guidelines, making it a strong approval candidate.",
+                hint: "Does it meet all landscaping and storm drain requirements?",
+                image: "application_4.jpg"
+            },
+            {
+                id: 5,
+                scenario: "An ambitious developer proposes a tall residential building to maximize space on a smaller plot.",
+                description: "The residential building has a plot size of 500 sqm, a building height of 11 meters, and proper storm drains.",
+                correct: "reject",
+                feedbackCorrect: "Excellent! This application exceeds the maximum building height of 10 meters, which violates regulations.",
+                feedbackIncorrect: "Not this time. This application exceeds the maximum building height of 10 meters.",
+                hint: "Check if the building height complies with the maximum limit.",
+                image: "application_6.jpg"
+            }
+        ];
+
+        // Show a specific screen by ID
+        function showScreen(screenId) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        // Start the introduction screen
+        function startIntroduction() {
+            showScreen('screen-intro');
+        }
+
+        // Handle name submission
+        function submitName() {
+            const playerName = document.getElementById('playerName').value.trim();
+            const feedbackMessage = document.getElementById('nameFeedback');
+            if (playerName) {
+                document.querySelectorAll('.playerNameDisplay').forEach(span => span.textContent = playerName);
+                feedbackMessage.textContent = ""; // Clear feedback message
+                showScreen('screen-welcome');
+            } else {
+                feedbackMessage.textContent = "Jack: I need your name to introduce you to the director. Please enter your name below.";
+            }
+        }
+
+        // Proceed to guidelines
+        function goToGuidelines() {
+            showScreen('screen-guidelines');
+        }
+
+        // Start reviewing applications
+        function goToDesk() {
+            showScreen('screen-desk');
+            renderApplications();
+        }
+
+        // Render the current application
+        function renderApplications() {
+            const appContainer = document.getElementById('applications');
+            appContainer.innerHTML = '';
+            const app = applications[currentApplication];
+            appContainer.innerHTML = `
+                <div class="application-card">
+                    <div class="application-header">
+                        <img src="${app.image}" alt="Application Image">
+                        <h3>Application ${app.id}</h3>
+                        <p>${app.description}</p>
+                    </div>
+                    <div class="scenario">
+                        <h4>Scenario:</h4>
+                        <p>${app.scenario}</p>
+                    </div>
+                    <div class="btn-group">
+                        <button onclick="handleDecision('approve')">Approve</button>
+                        <button onclick="handleDecision('reject')">Reject</button>
+                        <button onclick="showHint()">Hint</button>
+                    </div>
+                    <div id="feedback" class="feedback"></div>
+                </div>`;
+        }
+
+        // Handle the player's decision
+        function handleDecision(action) {
+            const app = applications[currentApplication];
+            const feedbackElement = document.getElementById('feedback');
+            if (action === app.correct) {
+                score++;
+                feedbackElement.textContent = app.feedbackCorrect;
+                feedbackElement.className = 'feedback success';
+            } else {
+                feedbackElement.textContent = app.feedbackIncorrect;
+                feedbackElement.className = 'feedback error';
+            }
+            setTimeout(() => {
+                currentApplication++;
+                if (currentApplication < applications.length) {
+                    renderApplications();
+                } else {
+                    showScore();
+                }
+            }, 3000);
+        }
+
+        // Show a hint for the current application
+        function showHint() {
+            const app = applications[currentApplication];
+            const feedbackElement = document.getElementById('feedback');
+            feedbackElement.textContent = app.hint;
+            feedbackElement.className = 'feedback hint';
+        }
+
+        // Display the final score
+        function showScore() {
+            const appContainer = document.getElementById('applications');
+            appContainer.innerHTML = `
+                <h2>Your Final Score: ${score} / ${applications.length}</h2>
+                <button onclick="restartGame()">Restart Game</button>
+            `;
+        }
+
+        // Restart the game
+        function restartGame() {
+            currentApplication = 0;
+            score = 0;
+            showScreen('screen-welcome-page');
+        }
+
+        // Initialize the game on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            showScreen('screen-welcome-page');
+        });
+    </script>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Page -->
+        <div id="screen-welcome-page" class="screen active text-center">
+            <img src="welcome_page.jpg" alt="Welcome Image">
+            <h1>Building Permit Approval Game</h1>
+            <p>In this game, you will learn how to evaluate building permit applications based on urban planning guidelines. </p>
+           <p>Your role as a Junior Urban Planner is critical to ensuring safety, sustainability, and compliance.</p> 
+           <div class="button-container">
+            <button onclick="startIntroduction()" class="btn btn-primary">Start Game</button>
+        </div>
+        </div>
+
+        <!-- Introduction Screen -->
+        <div id="screen-intro" class="screen">
+            <img src="image_jack.jpg" alt="Introduction Image">
+            <h1>Introduction</h1>
+            <p><strong>Jack:</strong> "Hi, I’m Jack, your coworker. Welcome to the Planning Department!"</p>
+            <p>"Can you tell me your name?"</p>
+            <input type="text" id="playerName" placeholder="Enter your name" />
+            <div class="button-container">
+             <button onclick="submitName()" class="btn btn-success">Submit</button>
+            </div>
+            <div id="nameFeedback" class="feedback-message"></div>
+        </div>
+
+        <!-- Welcome Screen -->
+        <div id="screen-welcome" class="screen">
+            <img src="image_director.jpg" alt="Welcome Image">
+            <h1>Welcome, <span class="playerNameDisplay"></span>!</h1>
+            <p><strong>Jack:</strong> "Let me introduce you to Director Maria Ortega."</p>
+            <div class="button-container">
+            <button onclick="goToGuidelines()" class="btn btn-primary">Proceed to Guidelines</button>
+        </div>
+        </div>
+
+        <!-- Guidelines Screen -->
+        <div id="screen-guidelines" class="screen">
+            <h1>Planning Guidelines</h1>
+            <img src="image_director.jpg" alt="Welcome Image">
+            <p><strong>Director Ortega:</strong> It is good to have you here! Your job is to review building permit applications to ensure they comply with Greenhaven’s planning guidelines. </p>
+            <p>It’s a big responsibility, but Jack will be there to assist you if needed. </p>
+            <hr width="100%" size="2" color="blue" noshade>
+            <p>As a Junior Urban Planner, you need to evaluate building applications based on the following guidelines:</p>
+            <ul>
+                <li><strong>Minimum Plot Size:</strong> Residential buildings must have a minimum plot size of 500 sqm.</li>
+                <li><strong>Maximum Building Height:</strong> Buildings must not exceed a height of 10 meters.</li>
+                <li><strong>Frontage Setback:</strong> A minimum frontage setback of 6 meters is required in high-traffic areas.</li>
+                <li><strong>Storm Drainage Systems:</strong> All buildings must include proper storm drainage systems.</li>
+                <li><strong>Environmental Sustainability:</strong> Projects with at least 50% permeable landscaping are encouraged.</li>
+                <li><strong>Compliance with Zoning Laws:</strong> Applications must align with local zoning laws.</li>
+            </ul>
+            <div class="btn-group">
+                <button onclick="goToDesk()" class="btn btn-primary">Start Reviewing Applications</button>
+            </div>
+        </div>
+
+        <!-- Desk Screen -->
+        <div id="screen-desk" class="screen">
+            <h1>Your Desk</h1>
+            <p><strong>Jack:</strong> "Here's your first set of applications. Good luck!"</p>
+            <div id="applications"></div>
+        </div>
+    </div>
+</body>
+</html>

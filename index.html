@@ -10,59 +10,69 @@
     <script defer src="game.js"></script>
 </head>
 <body class="bg-light">
-    <div class="container py-5">
-
+   <body>
+    <div class="container">
         <!-- Welcome Page -->
         <div id="screen-welcome-page" class="screen active text-center">
-            <h1 class="mb-3">Welcome to the Building Permit Approval Game</h1>
-            <p class="lead">In this game, you will learn how to evaluate building permit applications based on urban planning guidelines. Your role as a Junior Urban Planner is critical to ensuring safety, sustainability, and compliance.</p>
-            <button id="startIntroduction" class="btn btn-primary mt-3">Start Game</button>
+            <img src="welcome_page.jpg" alt="Welcome Image">
+            <h1>Building Permit Approval Game</h1>
+            <p>In this game, you will learn how to evaluate building permit applications based on urban planning guidelines. </p>
+           <p>Your role as a Junior Urban Planner is critical to ensuring safety, sustainability, and compliance.</p> 
+           <div class="button-container">
+            <button onclick="startIntroduction()" class="btn btn-primary">Start Game</button>
+        </div>
         </div>
 
         <!-- Introduction Screen -->
         <div id="screen-intro" class="screen">
-            <h1 class="text-center">Introduction</h1>
-            <p class="fw-bold">Jack:</p>
-            <blockquote class="blockquote">"Hi, I’m Jack, one of your colleagues here at the planning department. Welcome aboard!"</blockquote>
-            <p class="mb-4">"We’re thrilled to have you join the team. To get started, could you tell me your name?"</p>
-            <div class="mb-3">
-                <input type="text" id="playerName" class="form-control" placeholder="Enter your name">
+            <img src="image_jack.jpg" alt="Introduction Image">
+            <h1>Introduction</h1>
+            <p><strong>Jack:</strong> "Hi, I’m Jack, your coworker. Welcome to the Planning Department!"</p>
+            <p>"Can you tell me your name?"</p>
+            <input type="text" id="playerName" placeholder="Enter your name" />
+            <div class="button-container">
+             <button onclick="submitName()" class="btn btn-success">Submit</button>
             </div>
-            <button id="submitName" class="btn btn-success">Submit</button>
+            <div id="nameFeedback" class="feedback-message"></div>
         </div>
 
         <!-- Welcome Screen -->
         <div id="screen-welcome" class="screen">
-            <h1>Thank You, <span class="playerNameDisplay fw-bold"></span>!</h1>
-            <p><strong>Jack:</strong> "Alright, <span class="playerNameDisplay fw-bold"></span>, next up is your meeting with Director Maria Ortega. She’ll give you a quick briefing on your responsibilities."</p>
-            <button id="toDirectorOffice" class="btn btn-primary">Go to Director’s Office</button>
+            <img src="image_director.jpg" alt="Welcome Image">
+            <h1>Welcome, <span class="playerNameDisplay"></span>!</h1>
+            <p><strong>Jack:</strong> "Let me introduce you to Director Maria Ortega."</p>
+            <div class="button-container">
+            <button onclick="goToGuidelines()" class="btn btn-primary">Proceed to Guidelines</button>
+        </div>
         </div>
 
-        <!-- Director’s Office Screen -->
-        <div id="screen-director" class="screen">
-            <h1 class="text-center">Director Maria Ortega</h1>
-            <p><strong>Director Maria Ortega:</strong> "Welcome to the team, <span class="playerNameDisplay fw-bold"></span>. Your role is critical to shaping the future of Greenhaven."</p>
-            <p>"Your job is to review building permit applications to ensure they comply with Greenhaven’s planning guidelines. It’s a big responsibility, but Jack will be there to assist you if needed."</p>
-            <button id="toDesk" class="btn btn-secondary">Continue to Your Desk</button>
+        <!-- Guidelines Screen -->
+        <div id="screen-guidelines" class="screen">
+            <h1>Planning Guidelines</h1>
+            <img src="image_director.jpg" alt="Welcome Image">
+            <p><strong>Director Ortega:</strong> It is good to have you here! Your job is to review building permit applications to ensure they comply with Greenhaven’s planning guidelines. </p>
+            <p>It’s a big responsibility, but Jack will be there to assist you if needed. </p>
+            <hr width="100%" size="2" color="blue" noshade>
+            <p>As a Junior Urban Planner, you need to evaluate building applications based on the following guidelines:</p>
+            <ul>
+                <li><strong>Minimum Plot Size:</strong> Residential buildings must have a minimum plot size of 500 sqm.</li>
+                <li><strong>Maximum Building Height:</strong> Buildings must not exceed a height of 10 meters.</li>
+                <li><strong>Frontage Setback:</strong> A minimum frontage setback of 6 meters is required in high-traffic areas.</li>
+                <li><strong>Storm Drainage Systems:</strong> All buildings must include proper storm drainage systems.</li>
+                <li><strong>Environmental Sustainability:</strong> Projects with at least 50% permeable landscaping are encouraged.</li>
+                <li><strong>Compliance with Zoning Laws:</strong> Applications must align with local zoning laws.</li>
+            </ul>
+            <div class="btn-group">
+                <button onclick="goToDesk()" class="btn btn-primary">Start Reviewing Applications</button>
+            </div>
         </div>
 
-        <!-- Desk and Applications -->
+        <!-- Desk Screen -->
         <div id="screen-desk" class="screen">
             <h1>Your Desk</h1>
-            <p><strong>Jack:</strong> "Welcome to your desk, <span class="playerNameDisplay"></span>. Time to review your first building permit application. Remember, I’m here if you need help!"</p>
-            <div id="applications" class="mt-4"></div>
-            <button id="viewScore" class="btn btn-warning mt-3 d-none">View Final Score</button>
+            <p><strong>Jack:</strong> "Here's your first set of applications. Good luck!"</p>
+            <div id="applications"></div>
         </div>
-
-        <!-- Score Screen -->
-        <div id="screen-score" class="screen">
-            <h1>Your Score</h1>
-            <p><strong>Jack:</strong> "Great job, <span class="playerNameDisplay"></span>! Here’s how you did:"</p>
-            <p id="finalScore" class="fs-4 fw-bold"></p>
-            <ul id="detailedFeedback" class="list-group"></ul>
-            <button id="restartGame" class="btn btn-danger mt-4">Restart Game</button>
-        </div>
-
     </div>
 </body>
 </html>
